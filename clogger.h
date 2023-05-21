@@ -9,6 +9,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "stdbool.h"
+#include "time.h"
 // ----------------------------------------------------------------
 // SETTINGS
 // all settings can (safely) be set through  SET_<SETTING_NAME>() function,
@@ -42,8 +43,8 @@ int SET_DELETE_ON_RERUN(bool b) {
 }
 
 int SET_LOG_LEVEL(int level) {
-    if (level < 0 || level > 7 || level == NULL) {
-        printf("CLOGGER ERROR: Invalid log level! Levels must be between 0 and 7! Defaulting to log level 0 (debug)...\n");
+    if (level < 0 || level > 7) {
+        printf("CLOGGER ERROR: Invalid log level! Levels must be between 0 and 7! Defaulting to log level 0 (DEBUG)...\n");
         return -1;
     } else {
         LOG_LEVEL = level;
@@ -51,6 +52,22 @@ int SET_LOG_LEVEL(int level) {
     return 0;
 }
 
-int DEBUG()
+int TRACE(char* msg) {
+
+
+}
+
+char* formatter(char* msg) {
+    // TODO: add support to log stack frame, date, time, function called from, etc. perhaps add time as another function/param that the user can call from the main program to be slightly more accurate?
+    // get time
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    char * time = malloc(32 * sizeof(char));
+    snprintf(time, 32, "%d-%02d-%02d %02d:%02d:%02d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+    // constuct message
+    size_t size = sizeof(msg) * sizeof(char);
+    char* f_msg = malloc(size);
+    snprintf(f_msg, size, "%s: %s\n", time, msg);
+}
 
 #endif
