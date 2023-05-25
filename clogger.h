@@ -35,6 +35,7 @@ int LOG_LEVEL = 0;
 // prototypes
 void LOG_INIT(char*);
 int SET_DELETE_ON_RERUN(bool);
+int SET_LOG_LEVEL(int);
 int TRACE(char*);
 int DEBUG(char*);
 int INFO(char*);
