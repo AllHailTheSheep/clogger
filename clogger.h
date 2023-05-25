@@ -1,5 +1,4 @@
 #ifndef clogger
-// TODO: add color, and other log functions
 // this is not on most windows systems, so i'm including it here to make sure things still work
 #ifdef WIN32
 #include <io.h>
@@ -16,6 +15,8 @@
 // all settings can (safely) be set through  SET_<SETTING_NAME>() function,
 // or you can just specify them in your C file like DELETE_ON_RERUN = true;
 // although that means there is no error checking on your values and could cause undefined behavior.
+
+// specifies whether the file should be deleted and remade (cleared) on each subsequent run.
 bool DELETE_ON_RERUN = false;
 /**
  * LOG LEVELS
@@ -27,6 +28,7 @@ bool DELETE_ON_RERUN = false;
  * 5 : FATAL
  * 6 : OFF
  */
+// specifies the logger level
 int LOG_LEVEL = 0;
 
 
@@ -34,6 +36,11 @@ int LOG_LEVEL = 0;
 void LOG_INIT(char*);
 int SET_DELETE_ON_RERUN(bool);
 int TRACE(char*);
+int DEBUG(char*);
+int INFO(char*);
+int WARNING(char*);
+int ERROR(char*);
+int FATAL(char*);
 char* formatter(char*);
 
 FILE* fp;
@@ -47,7 +54,7 @@ void LOG_INIT(char* path) {
 
 int SET_DELETE_ON_RERUN(bool b) {
     DELETE_ON_RERUN = b;
-    return 0;
+    return 1;
 }
 
 int SET_LOG_LEVEL(int level) {
@@ -58,16 +65,79 @@ int SET_LOG_LEVEL(int level) {
     } else {
         LOG_LEVEL = level;
     }
-    return 0;
+    return 1;
 }
 
 int TRACE(char* msg) {
-    if (LOG_LEVEL <= 0 && LOG_LEVEL >= 6) {
+    if (LOG_LEVEL == 0) {
         char* f_msg = formatter(msg);
-        fprintf(fp, "TRACE: %s", f_msg);
+        int check = fprintf(fp, "TRACE: %s", f_msg);
+        if (check < 0) {
+            printf("%s\n", "LOGGER ERROR: fprintf returned negative! Contact the developer.");
+        }
+        free(f_msg);
     }
+    return 1;
+}
 
+int DEBUG(char* msg) {
+    if (LOG_LEVEL >= 0 && LOG_LEVEL <= 1) {
+        char* f_msg = formatter(msg);
+        int check = fprintf(fp, "DEBUG: %s", f_msg);
+        if (check < 0) {
+            printf("%s\n", "LOGGER ERROR: fprintf returned negative! Contact the developer.");
+        }
+        free(f_msg);
+    }
+    return 1;
+}
 
+int INFO(char* msg) {
+    if (LOG_LEVEL >= 0 && LOG_LEVEL <= 2) {
+        char* f_msg = formatter(msg);
+        int check = fprintf(fp, "INFO: %s", f_msg);
+        if (check < 0) {
+            printf("%s\n", "LOGGER ERROR: fprintf returned negative! Contact the developer.");
+        }
+        free(f_msg);
+    }
+    return 1;
+}
+
+int WARNING(char* msg) {
+    if (LOG_LEVEL >= 0 && LOG_LEVEL <= 3) {
+        char* f_msg = formatter(msg);
+        int check = fprintf(fp, "WARNING: %s", f_msg);
+        if (check < 0) {
+            printf("%s\n", "LOGGER ERROR: fprintf returned negative! Contact the developer.");
+        }
+        free(f_msg);
+    }
+    return 1;
+}
+
+int ERROR(char* msg) {
+    if (LOG_LEVEL >= 0 && LOG_LEVEL <= 4) {
+        char* f_msg = formatter(msg);
+        int check = fprintf(fp, "ERROR: %s", f_msg);
+        if (check < 0) {
+            printf("%s\n", "LOGGER ERROR: fprintf returned negative! Contact the developer.");
+        }
+    }
+    return 1;
+}
+
+int FATAL(char* msg) {
+    if (LOG_LEVEL >= 0 && LOG_LEVEL <= 5) {
+        char* f_msg = formatter(msg);
+        int check = fprintf(fp, "FATAL: %s", f_msg);
+        if (check < 0) {
+            printf("%s\n", "LOGGER ERROR: fprintf returned negative! Contact the developer.");
+        }
+        free(f_msg);
+    }
+    
+    return 1;
 }
 
 char* formatter(char* msg) {
